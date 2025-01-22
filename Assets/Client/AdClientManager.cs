@@ -1,0 +1,96 @@
+using Nura.AdServiceBlog;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+
+namespace Nura.Client
+{
+    public class AdClientManager : MonoBehaviour
+    {
+        private static AdClientManager _instance;
+        private const int DELAY_RETRY_IN_MS = 5000;
+        private const int DELAY_REQUEST_AD = 2000;
+        [SerializeField] private AdInitiator _adInitiator;
+        [SerializeField] private BannerAdController _bannerAdController;
+        [SerializeField] private RewardAdController _rewardAdController;
+        [SerializeField] private InterstitialAdController _interstitialAdController;
+
+        public static AdClientManager Instance { get => _instance; }
+        public static bool IsAlive => _instance;
+
+        private void Awake()
+        {
+            if (_instance)
+            {
+                Debug.LogError("Already has an instance");
+                Destroy(gameObject);
+                return;
+            }
+
+            _instance = this;
+        }
+
+        private void OnDestroy()
+        {
+            if (this == _instance)
+            {
+                _instance = null;
+            }
+        }
+
+        private void Start()
+        {
+            InitializeAds();
+        }
+
+        private async void InitializeAds()
+        {
+            //init SDK
+            int maxRetry = 3;
+            while (true)
+            {
+                bool result = await _adInitiator.InitSDK();
+                if (result)
+                {
+                    break;
+                }
+
+                maxRetry--;
+                if (maxRetry == 0)
+                {
+                    Debug.Log("Can't init Ad mediation");
+                    return;
+                }
+
+                await Task.Delay(DELAY_RETRY_IN_MS);
+            }
+
+            //request ad
+            await Task.Delay(DELAY_REQUEST_AD);
+            _bannerAdController.RequestAd();            
+            
+            await Task.Delay(DELAY_REQUEST_AD);
+            _rewardAdController.RequestAd();  
+            
+            await Task.Delay(DELAY_REQUEST_AD);
+            _interstitialAdController.RequestAd();
+        }
+
+        public void ShowRewardAd(Action onWatchSuccess, Action onWatchError)
+        {
+            bool isSuccess = false;
+            if (_rewardAdController.IsLoadedAd())
+            {
+                _rewardAdController.RegisterOnWatchAdSuccess(onWatchSuccess);
+                isSuccess = _rewardAdController.ShowAd();
+            }
+
+            if (!isSuccess)
+            {
+                onWatchError?.Invoke();
+            }
+        }
+    }
+}
