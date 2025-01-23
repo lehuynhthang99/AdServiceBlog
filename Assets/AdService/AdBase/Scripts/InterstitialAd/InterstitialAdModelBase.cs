@@ -7,33 +7,33 @@ namespace Nura.AdServiceBlog
 {
     public abstract class InterstitialAdModelBase
     {
-        protected Action _onAdLoaded;
-        protected Action _onAdLoadFail;
-        protected Action _onAdClose;
+        protected Action<AdInfo> _onAdLoaded;
+        protected Action<AdErrorInfo> _onAdLoadFail;
+        protected Action<AdInfo> _onAdClose;
 
         public abstract void Request();
         public abstract bool IsLoaded();
         public abstract bool TryShowAd();
-        public void RegisterCallback(Action onAdLoaded, Action onAdLoadFail, Action onAdClose)
+        public void RegisterCallback(Action<AdInfo> onAdLoaded, Action<AdErrorInfo> onAdLoadFail, Action<AdInfo> onAdClose)
         {
             _onAdLoaded = onAdLoaded;
             _onAdLoadFail = onAdLoadFail;
             _onAdClose = onAdClose;
         }
 
-        protected virtual void HandleFailedLoad()
+        protected virtual void HandleFailedLoad(AdErrorInfo adErrorInfo)
         {
-            _onAdLoadFail?.Invoke();
+            _onAdLoadFail?.Invoke(adErrorInfo);
         }
 
-        protected virtual void HandleAdClose()
+        protected virtual void HandleAdClose(AdInfo adInfo)
         {
-            _onAdClose?.Invoke();
+            _onAdClose?.Invoke(adInfo);
         }
 
-        protected virtual void HandleAdLoaded()
+        protected virtual void HandleAdLoaded(AdInfo adInfo)
         {
-            _onAdLoaded?.Invoke();
+            _onAdLoaded?.Invoke(adInfo);
         }
     }
 }

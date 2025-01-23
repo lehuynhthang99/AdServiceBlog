@@ -7,8 +7,8 @@ namespace Nura.AdServiceBlog
 {
     public abstract class BannerAdModelBase
     {
-        protected Action _onAdLoaded;
-        protected Action _onAdLoadFail;
+        protected Action<AdInfo> _onAdLoaded;
+        protected Action<AdErrorInfo> _onAdLoadFail;
 
         public abstract void Request();
         public abstract bool TryShowAd();
@@ -16,20 +16,20 @@ namespace Nura.AdServiceBlog
         public abstract void Destroy();
         public abstract void Hide();
 
-        public void RegisterCallback(Action onAdLoaded, Action onAdLoadFail)
+        public void RegisterCallback(Action<AdInfo> onAdLoaded, Action<AdErrorInfo> onAdLoadFail)
         {
             _onAdLoaded = onAdLoaded;
             _onAdLoadFail = onAdLoadFail;
         }
 
-        protected virtual void HandleFailedLoad()
+        protected virtual void HandleFailedLoad(AdErrorInfo adErrorInfo)
         {
-            _onAdLoadFail?.Invoke();
+            _onAdLoadFail?.Invoke(adErrorInfo);
         }
 
-        protected virtual void HandleAdLoaded()
+        protected virtual void HandleAdLoaded(AdInfo adInfo)
         {
-            _onAdLoaded?.Invoke();
+            _onAdLoaded?.Invoke(adInfo);
         }
     }
 }

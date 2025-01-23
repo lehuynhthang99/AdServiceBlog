@@ -17,44 +17,52 @@ namespace Nura.AdServiceBlog.MAXMediation
             MaxSdkCallbacks.Rewarded.OnAdReceivedRewardEvent += OnRewardedAdReceivedRewardEvent;
         }
 
-        private void OnRewardedAdLoadedEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
+        private void OnRewardedAdLoadedEvent(string adUnitId, MaxSdkBase.AdInfo maxAdInfo)
         {
             if (!string.Equals(_maxMediationRewardedID, adUnitId))
             {
                 return;
             }
 
-            HandleAdLoaded();
+            AdInfo adInfo = MAXMediationAdInfoParser.ParseToBaseAdInfo(maxAdInfo);
+
+            HandleAdLoaded(adInfo);
         }
 
-        private void OnRewardedAdLoadFailedEvent(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
+        private void OnRewardedAdLoadFailedEvent(string adUnitId, MaxSdkBase.ErrorInfo maxErrorInfo)
         {
             if (!string.Equals(_maxMediationRewardedID, adUnitId))
             {
                 return;
             }
 
-            HandleFailedLoad();
+            AdErrorInfo adErrorInfo = MAXMediationAdInfoParser.ParseToBaseAdErrorInfo(maxErrorInfo);
+
+            HandleFailedLoad(adErrorInfo);
         }
 
-        private void OnRewardedAdHiddenEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
+        private void OnRewardedAdHiddenEvent(string adUnitId, MaxSdkBase.AdInfo maxAdInfo)
         {
             if (!string.Equals(_maxMediationRewardedID, adUnitId))
             {
                 return;
             }
 
-            HandleAdClose();
+            AdInfo adInfo = MAXMediationAdInfoParser.ParseToBaseAdInfo(maxAdInfo);
+
+            HandleAdClose(adInfo);
         }
 
-        private void OnRewardedAdReceivedRewardEvent(string adUnitId, MaxSdk.Reward reward, MaxSdkBase.AdInfo adInfo)
+        private void OnRewardedAdReceivedRewardEvent(string adUnitId, MaxSdk.Reward reward, MaxSdkBase.AdInfo maxAdInfo)
         {
             if (!string.Equals(_maxMediationRewardedID, adUnitId))
             {
                 return;
             }
 
-            HandleOnAdRewarded();
+            AdInfo adInfo = MAXMediationAdInfoParser.ParseToBaseAdInfo(maxAdInfo);
+
+            HandleOnAdRewarded(adInfo);
         }
 
         public override void Request()

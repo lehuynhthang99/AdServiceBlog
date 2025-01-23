@@ -10,9 +10,9 @@ namespace Nura.AdServiceBlog
     {
         protected RewardAdModelBase _rewardAdModel;
         
-        protected bool _isOnClosedAd;
-        protected bool _isOnAdLoadFail;
-        protected bool _isOnAdWatchSuccess;
+        protected AdInfo _onClosedAdInfo;
+        protected AdErrorInfo _onAdLoadFailInfo;
+        protected AdInfo _onAdWatchSuccessInfo;
 
         protected Action _onCloseAd;
         protected Action _onWatchAdSuccess;
@@ -65,34 +65,46 @@ namespace Nura.AdServiceBlog
         protected virtual void Update()
         {
             //when ad is closed
-            if (_isOnClosedAd)
+            if (_onClosedAdInfo != null)
             {
-                _isOnClosedAd = false;
+                //TODO: handle ad info if needed
+
+                //------------------------------
+                _onClosedAdInfo = null;
                 _onCloseAd?.Invoke();
                 _onCloseAd = null;
                 RequestNewAdAfterSeconds(INTERVAL_LOAD_NEXT_AD_AFTER_WATCH_IN_MS);
             }
 
             //when ad loaded fail
-            if (_isOnAdLoadFail)
+            if (_onAdLoadFailInfo != null)
             {
-                _isOnAdLoadFail = false;
+                //TODO: handle ad error info if needed
+
+                //------------------------------
+                _onAdLoadFailInfo = null;
                 RequestNewAdAfterSeconds(MIN_SECONDS_TO_REQUEST_WHEN_REQUEST_FAILED_IN_MS);
             }
 
             //when ad close
-            if (_isOnClosedAd)
+            if (_onClosedAdInfo != null)
             {
-                _isOnClosedAd = false;
+                //TODO: handle ad info if needed
+
+                //------------------------------
+                _onClosedAdInfo = null;
                 _onCloseAd?.Invoke();
                 _onCloseAd = null;
                 RequestNewAdAfterSeconds(INTERVAL_LOAD_NEXT_AD_AFTER_WATCH_IN_MS);
             }
 
             //when reward ad watch success
-            if (_isOnAdWatchSuccess)
+            if (_onAdWatchSuccessInfo != null)
             {
-                _isOnAdWatchSuccess = false;
+                //TODO: handle ad info if needed
+
+                //------------------------------
+                _onAdWatchSuccessInfo = null;
                 _onWatchAdSuccess?.Invoke();
                 _onWatchAdSuccess = null;
             }
@@ -106,24 +118,24 @@ namespace Nura.AdServiceBlog
             RequestAd();
         }
 
-        protected virtual void HandleAdClose()
+        protected virtual void HandleAdClose(AdInfo adInfo)
         {
-            _isOnClosedAd = true;
+            _onClosedAdInfo = adInfo;
         }
 
-        protected virtual void HandleAdLoadFail()
+        protected virtual void HandleAdLoadFail(AdErrorInfo adErrorInfo)
         {
-            _isOnAdLoadFail = true;
+            _onAdLoadFailInfo = adErrorInfo;
         }
 
-        protected virtual void HandleAdWatchSuccess()
+        protected virtual void HandleAdWatchSuccess(AdInfo adInfo)
         {
-            _isOnAdLoadFail = true;
+            _onAdWatchSuccessInfo = adInfo;
         }
 
-        protected void HandleAdLoadSuccess()
+        protected void HandleAdLoadSuccess(AdInfo adInfo)
         {
-            _isOnAdWatchSuccess = true;
+
         }
 
 

@@ -11,8 +11,8 @@ namespace Nura.AdServiceBlog
     {
         protected InterstitialAdModelBase _interstitialAdModel;
 
-        protected bool _isOnClosedAd;
-        protected bool _isOnAdLoadFail;
+        protected AdInfo _onClosedAdInfo;
+        protected AdErrorInfo _onAdLoadFailInfo;
 
         protected Action _onCloseAd;
 
@@ -58,18 +58,24 @@ namespace Nura.AdServiceBlog
         protected virtual void Update()
         {
             //when ad is closed
-            if (_isOnClosedAd)
+            if (_onClosedAdInfo != null)
             {
-                _isOnClosedAd = false;
+                //TODO: handle ad info if needed
+
+                //------------------------------
+                _onClosedAdInfo = null;
                 _onCloseAd?.Invoke();
                 _onCloseAd = null;
                 RequestNewAdAfterSeconds(INTERVAL_LOAD_NEXT_AD_AFTER_WATCH_IN_MS);
             }
 
             //when ad loaded failed
-            if (_isOnAdLoadFail)
+            if (_onAdLoadFailInfo != null)
             {
-                _isOnAdLoadFail = false;
+                //TODO: handle ad eror info if needed
+
+                //------------------------------
+                _onAdLoadFailInfo = null;
                 RequestNewAdAfterSeconds(MIN_SECONDS_TO_REQUEST_WHEN_REQUEST_FAILED_IN_MS);
             }
 
@@ -82,17 +88,17 @@ namespace Nura.AdServiceBlog
             RequestAd();
         }
 
-        protected virtual void HandleAdClose()
+        protected virtual void HandleAdClose(AdInfo adInfo)
         {
-            _isOnClosedAd = true;
+            _onClosedAdInfo = adInfo;
         }
 
-        protected virtual void HandleAdLoadFail()
+        protected virtual void HandleAdLoadFail(AdErrorInfo adErrorInfo)
         {
-            _isOnAdLoadFail = true;
+            _onAdLoadFailInfo = adErrorInfo;
         }
 
-        protected void HandleAdLoadSuccess()
+        protected void HandleAdLoadSuccess(AdInfo adInfo)
         {
         }
 
