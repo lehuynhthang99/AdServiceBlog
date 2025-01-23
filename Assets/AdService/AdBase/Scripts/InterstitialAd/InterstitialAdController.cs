@@ -7,9 +7,8 @@ using UnityEngine;
 
 namespace Nura.AdServiceBlog
 {
-    public class InterstitialAdController : AdControllerBase
+    public class InterstitialAdController : AdControllerBase<InterstitialAdModelBase>
     {
-        protected InterstitialAdModelBase _interstitialAdModel;
 
         protected AdInfo _onClosedAdInfo;
         protected AdInfo _onAdPaidInfo;
@@ -19,19 +18,19 @@ namespace Nura.AdServiceBlog
 
         protected InterstitialAdModelBase CreateModel()
         {
-            return _adFactory.CreateInterstitialAdModel();
+            return _adModelFactory.CreateAdModel();
         }
         public override bool IsLoadedAd()
         {
-            return _interstitialAdModel != null ? _interstitialAdModel.IsLoaded() : false;
+            return _adModel != null ? _adModel.IsLoaded() : false;
         }
 
         public override void RequestAd()
         {
-            if (_interstitialAdModel == null)
+            if (_adModel == null)
             {
-                _interstitialAdModel = CreateModel();
-                _interstitialAdModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdClose, HandleAdPaid);
+                _adModel = CreateModel();
+                _adModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdClose, HandleAdPaid);
             }
         }
 
@@ -45,7 +44,7 @@ namespace Nura.AdServiceBlog
             bool result = false;
             if (IsLoadedAd())
             {
-                result = _interstitialAdModel.TryShowAd();
+                result = _adModel.TryShowAd();
             }
 
             if (!result)
