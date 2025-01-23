@@ -10,6 +10,7 @@ namespace Nura.AdServiceBlog
         protected BannerAdModelBase _bannerAdModel;
 
         protected AdErrorInfo _onAdLoadFailInfo;
+        protected AdInfo _onAdPaidInfo;
 
         protected BannerAdModelBase CreateModel()
         {
@@ -25,7 +26,7 @@ namespace Nura.AdServiceBlog
             if (_bannerAdModel == null)
             {
                 _bannerAdModel = CreateModel();
-                _bannerAdModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail);
+                _bannerAdModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdPaid);
             }
         }
 
@@ -39,6 +40,15 @@ namespace Nura.AdServiceBlog
                 //------------------------------
                 _onAdLoadFailInfo = null;
                 RequestNewAdAfterSeconds(MIN_SECONDS_TO_REQUEST_WHEN_REQUEST_FAILED_IN_MS);
+            }            
+            
+            //when ad paid
+            if (_onAdPaidInfo != null)
+            {
+                //TODO: handle ad info if needed
+
+                //------------------------------
+                _onAdPaidInfo = null;
             }
         }
 
@@ -56,6 +66,11 @@ namespace Nura.AdServiceBlog
 
         protected void HandleAdLoadSuccess(AdInfo adInfo)
         {
+        }
+
+        protected void HandleAdPaid(AdInfo adInfo)
+        {
+            _onAdPaidInfo = adInfo;
         }
     }
 }

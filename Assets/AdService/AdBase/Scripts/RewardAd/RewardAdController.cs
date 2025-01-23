@@ -13,6 +13,7 @@ namespace Nura.AdServiceBlog
         protected AdInfo _onClosedAdInfo;
         protected AdErrorInfo _onAdLoadFailInfo;
         protected AdInfo _onAdWatchSuccessInfo;
+        protected AdInfo _onAdPaidInfo;
 
         protected Action _onCloseAd;
         protected Action _onWatchAdSuccess;
@@ -32,7 +33,7 @@ namespace Nura.AdServiceBlog
             if (_rewardAdModel == null)
             {
                 _rewardAdModel = CreateModel();
-                _rewardAdModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdClose, HandleAdLoadSuccess);
+                _rewardAdModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdClose, HandleAdLoadSuccess, HandleAdPaid);
             }
         }
 
@@ -109,6 +110,15 @@ namespace Nura.AdServiceBlog
                 _onWatchAdSuccess = null;
             }
 
+            //when ad paid 
+            if (_onAdPaidInfo != null)
+            {
+                //TODO: handle ad info if needed
+
+                //------------------------------
+                _onAdPaidInfo = null;
+            }
+
         }
 
         protected virtual async void RequestNewAdAfterSeconds(int timeInMs)
@@ -131,6 +141,11 @@ namespace Nura.AdServiceBlog
         protected virtual void HandleAdWatchSuccess(AdInfo adInfo)
         {
             _onAdWatchSuccessInfo = adInfo;
+        }
+
+        protected virtual void HandleAdPaid(AdInfo adInfo)
+        {
+            _onAdPaidInfo = adInfo;
         }
 
         protected void HandleAdLoadSuccess(AdInfo adInfo)

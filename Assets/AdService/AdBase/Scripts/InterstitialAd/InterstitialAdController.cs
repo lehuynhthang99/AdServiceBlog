@@ -12,6 +12,7 @@ namespace Nura.AdServiceBlog
         protected InterstitialAdModelBase _interstitialAdModel;
 
         protected AdInfo _onClosedAdInfo;
+        protected AdInfo _onAdPaidInfo;
         protected AdErrorInfo _onAdLoadFailInfo;
 
         protected Action _onCloseAd;
@@ -30,7 +31,7 @@ namespace Nura.AdServiceBlog
             if (_interstitialAdModel == null)
             {
                 _interstitialAdModel = CreateModel();
-                _interstitialAdModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdClose);
+                _interstitialAdModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdClose, HandleAdPaid);
             }
         }
 
@@ -79,6 +80,15 @@ namespace Nura.AdServiceBlog
                 RequestNewAdAfterSeconds(MIN_SECONDS_TO_REQUEST_WHEN_REQUEST_FAILED_IN_MS);
             }
 
+            //when ad paid
+            if (_onAdPaidInfo != null)
+            {
+                //TODO: handle ad info if needed
+
+                //------------------------------
+                _onAdPaidInfo = null;
+            }
+
         }
 
         protected virtual async void RequestNewAdAfterSeconds(int timeInMs)
@@ -93,6 +103,11 @@ namespace Nura.AdServiceBlog
             _onClosedAdInfo = adInfo;
         }
 
+        protected virtual void HandleAdPaid(AdInfo adInfo)
+        {
+            _onAdPaidInfo = adInfo;
+        }
+
         protected virtual void HandleAdLoadFail(AdErrorInfo adErrorInfo)
         {
             _onAdLoadFailInfo = adErrorInfo;
@@ -101,6 +116,8 @@ namespace Nura.AdServiceBlog
         protected void HandleAdLoadSuccess(AdInfo adInfo)
         {
         }
+
+
 
         protected void ClearCallback()
         {
