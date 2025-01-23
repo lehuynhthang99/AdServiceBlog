@@ -9,6 +9,9 @@ namespace Nura.AdServiceBlog
     {
         public static bool IsDeviceWeak()
         {
+#if UNITY_IOS || UNITY_EDITOR
+            return false;
+#endif
             int memory = SystemInfo.systemMemorySize;
             return memory <= 1024;
         }
