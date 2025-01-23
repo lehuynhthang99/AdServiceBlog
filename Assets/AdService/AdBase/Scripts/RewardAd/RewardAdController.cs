@@ -116,12 +116,12 @@ namespace Nura.AdServiceBlog
             _isOnAdLoadFail = true;
         }
 
-        protected virtual void HandleAdWatchSuccess(AdInfo adInfo)
+        protected virtual void HandleAdWatchSuccess()
         {
             _isOnAdWatchSuccess = true;
         }
 
-        protected void HandleAdLoadSuccess(AdInfo adInfo)
+        protected void HandleAdLoadSuccess()
         {
 
         }
