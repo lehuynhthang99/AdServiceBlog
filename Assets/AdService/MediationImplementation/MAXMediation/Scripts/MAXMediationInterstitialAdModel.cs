@@ -14,6 +14,7 @@ namespace Nura.AdServiceBlog.MAXMediation
             MaxSdkCallbacks.Interstitial.OnAdLoadedEvent += OnInterstitialLoadedEvent;
             MaxSdkCallbacks.Interstitial.OnAdLoadFailedEvent += OnInterstitialLoadFailedEvent;
             MaxSdkCallbacks.Interstitial.OnAdHiddenEvent += OnInterstitialHiddenEvent;
+            MaxSdkCallbacks.Interstitial.OnAdRevenuePaidEvent += OnInterstitialAdPaidEvent;
         }
 
 
@@ -51,6 +52,18 @@ namespace Nura.AdServiceBlog.MAXMediation
             AdInfo adInfo = MAXMediationAdInfoParser.ParseToBaseAdInfo(maxAdInfo);
 
             HandleAdClose(adInfo);
+        }
+
+        private void OnInterstitialAdPaidEvent(string adUnitId, MaxSdkBase.AdInfo maxAdInfo)
+        {
+            if (!string.Equals(_maxMediationInterstitialID, adUnitId))
+            {
+                return;
+            }
+
+            AdInfo adInfo = MAXMediationAdInfoParser.ParseToBaseAdInfo(maxAdInfo);
+
+            HandleOnAdPaid(adInfo);
         }
 
         public override bool IsLoaded()

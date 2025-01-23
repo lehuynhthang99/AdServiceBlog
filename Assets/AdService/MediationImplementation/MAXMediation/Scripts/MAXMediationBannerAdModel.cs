@@ -16,6 +16,7 @@ namespace Nura.AdServiceBlog.MAXMediation
 
             MaxSdkCallbacks.Banner.OnAdLoadedEvent += OnAdLoaded;
             MaxSdkCallbacks.Banner.OnAdLoadFailedEvent += OnAdFailedToLoad;
+            MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdPaid;
         }
 
         public override bool IsLoaded()
@@ -37,6 +38,18 @@ namespace Nura.AdServiceBlog.MAXMediation
             HandleAdLoaded(adInfo);
 
             TryShowAd();
+        }
+
+        private void OnAdPaid(string adUnitId, MaxSdkBase.AdInfo maxAdInfo)
+        {
+            if (!string.Equals(_maxMediationBannerID, adUnitId))
+            {
+                return;
+            }
+
+            AdInfo adInfo = MAXMediationAdInfoParser.ParseToBaseAdInfo(maxAdInfo);
+            
+            HandleAdPaid(adInfo);
         }
 
         private void OnAdFailedToLoad(string adUnitId, MaxSdkBase.ErrorInfo maxErrorInfo)

@@ -11,17 +11,19 @@ namespace Nura.AdServiceBlog
         protected Action<AdErrorInfo> _onAdLoadFail;
         protected Action<AdInfo> _onAdClose;
         protected Action<AdInfo> _onAdLoaded;
+        protected Action<AdInfo> _onAdPaid;
         
         public abstract bool TryShowAd();
         public abstract void Request();
         public abstract bool IsLoaded();
 
-        public void RegisterCallback(Action<AdInfo> onAdLoaded, Action<AdErrorInfo> onAdLoadFail, Action<AdInfo> onAdClose, Action<AdInfo> onAdRewarded)
+        public void RegisterCallback(Action<AdInfo> onAdLoaded, Action<AdErrorInfo> onAdLoadFail, Action<AdInfo> onAdClose, Action<AdInfo> onAdRewarded, Action<AdInfo> onAdPaid)
         {
             _onAdLoaded = onAdLoaded;
             _onAdRewarded = onAdRewarded;
             _onAdLoadFail = onAdLoadFail;
             _onAdClose = onAdClose;
+            _onAdPaid = onAdPaid;
         }
 
         protected virtual void HandleFailedLoad(AdErrorInfo adErrorInfo)
@@ -39,9 +41,14 @@ namespace Nura.AdServiceBlog
             _onAdLoaded?.Invoke(adInfo);
         }
 
-        public void HandleOnAdRewarded(AdInfo adInfo)
+        protected void HandleOnAdRewarded(AdInfo adInfo)
         {
             _onAdRewarded?.Invoke(adInfo);
+        }
+
+        protected void HandleOnAdPaid(AdInfo adInfo)
+        {
+            _onAdPaid?.Invoke(adInfo);
         }
 
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Nura.AdServiceBlog.MAXMediation
             MaxSdkCallbacks.Rewarded.OnAdLoadFailedEvent += OnRewardedAdLoadFailedEvent;
             MaxSdkCallbacks.Rewarded.OnAdHiddenEvent += OnRewardedAdHiddenEvent;
             MaxSdkCallbacks.Rewarded.OnAdReceivedRewardEvent += OnRewardedAdReceivedRewardEvent;
+            MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnRewardedAdPaid;
         }
 
         private void OnRewardedAdLoadedEvent(string adUnitId, MaxSdkBase.AdInfo maxAdInfo)
@@ -63,6 +65,18 @@ namespace Nura.AdServiceBlog.MAXMediation
             AdInfo adInfo = MAXMediationAdInfoParser.ParseToBaseAdInfo(maxAdInfo);
 
             HandleOnAdRewarded(adInfo);
+        }
+
+        private void OnRewardedAdPaid(string adUnitId, MaxSdkBase.AdInfo maxAdInfo)
+        {
+            if (!string.Equals(_maxMediationRewardedID, adUnitId))
+            {
+                return;
+            }
+
+            AdInfo adInfo = MAXMediationAdInfoParser.ParseToBaseAdInfo(maxAdInfo);
+
+            HandleOnAdPaid(adInfo);
         }
 
         public override void Request()
