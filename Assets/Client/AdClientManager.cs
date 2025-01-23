@@ -15,8 +15,12 @@ namespace Nura.Client
         [SerializeField] private AdInitiator _adInitiator;
         [SerializeField] private BannerAdController _bannerAdController;
         [SerializeField] private RewardAdController _rewardAdController;
-        [SerializeField] private InterstitialAdController _interstitialAdController;
 
+        [Space(12)]
+        [SerializeField] private InterstitialAdController _normalInterstitialAdController;
+        [SerializeField] private InterstitialAdController _lowEndInterstitialAdController;
+
+        private InterstitialAdController _chosenInterstitialAdController = null;
         public static AdClientManager Instance { get => _instance; }
         public static bool IsAlive => _instance;
 
@@ -68,14 +72,27 @@ namespace Nura.Client
             }
 
             //request ad
-            await Task.Delay(DELAY_REQUEST_AD);
-            _bannerAdController.RequestAd();            
-            
+            bool isLowEndDevice = AdMemoryChecker.IsDeviceWeak();
+
+            if (!isLowEndDevice)
+            {
+                await Task.Delay(DELAY_REQUEST_AD);
+                _bannerAdController.RequestAd();
+            }
+
             await Task.Delay(DELAY_REQUEST_AD);
             _rewardAdController.RequestAd();  
             
             await Task.Delay(DELAY_REQUEST_AD);
-            _interstitialAdController.RequestAd();
+            if (isLowEndDevice)
+            {
+                _chosenInterstitialAdController = _lowEndInterstitialAdController;
+            }
+            else
+            {
+                _chosenInterstitialAdController = _normalInterstitialAdController;
+            }
+            _chosenInterstitialAdController.RequestAd();
         }
 
         public void ShowRewardAd(Action onWatchSuccess, Action onWatchError)
@@ -84,7 +101,22 @@ namespace Nura.Client
             if (_rewardAdController.IsLoadedAd())
             {
                 _rewardAdController.RegisterOnWatchAdSuccess(onWatchSuccess);
-                isSuccess = _rewardAdController.ShowAd();
+                isSuccess = _rewardAdController.TryShowAd();
+            }
+
+            if (!isSuccess)
+            {
+                onWatchError?.Invoke();
+            }
+        }
+
+        public void ShowInterstitialAd(Action onAdClose, Action onWatchError)
+        {
+            bool isSuccess = false;
+            if (_chosenInterstitialAdController != null && _chosenInterstitialAdController.IsLoadedAd())
+            {
+                _chosenInterstitialAdController.RegisterOnCloseAd(onAdClose);
+                isSuccess = _chosenInterstitialAdController.TryShowAd();
             }
 
             if (!isSuccess)

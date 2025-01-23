@@ -1,3 +1,4 @@
+using Nura.AdServiceBlog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace Nura.AdServiceBlog
             _onWatchAdSuccess += onWatchAdSuccess;
         }
 
-        public bool ShowAd()
+        public bool TryShowAd()
         {
             bool result = false;
             if (IsLoadedAd())
@@ -160,3 +161,4 @@ namespace Nura.AdServiceBlog
         }
     }
 }
+

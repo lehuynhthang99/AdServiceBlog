@@ -39,7 +39,7 @@ namespace Nura.AdServiceBlog
             _onCloseAd += onCloseAd;
         }
 
-        public bool ShowAd()
+        public bool TryShowAd()
         {
             bool result = false;
             if (IsLoadedAd())
