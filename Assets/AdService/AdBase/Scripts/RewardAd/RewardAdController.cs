@@ -6,9 +6,8 @@ using UnityEngine;
 
 namespace Nura.AdServiceBlog
 {
-    public class RewardAdController : AdControllerBase
+    public class RewardAdController : AdControllerBase<RewardAdModelBase>
     {
-        protected RewardAdModelBase _rewardAdModel;
         
         protected AdInfo _onClosedAdInfo;
         protected AdErrorInfo _onAdLoadFailInfo;
@@ -20,20 +19,20 @@ namespace Nura.AdServiceBlog
 
         protected RewardAdModelBase CreateModel()
         {
-            return _adFactory.CreateRewardAdModel();
+            return _adModelFactory.CreateAdModel();
         }
 
         public override bool IsLoadedAd()
         {
-            return _rewardAdModel != null ? _rewardAdModel.IsLoaded() : false;
+            return _adModel != null ? _adModel.IsLoaded() : false;
         }
 
         public override void RequestAd()
         {
-            if (_rewardAdModel == null)
+            if (_adModel == null)
             {
-                _rewardAdModel = CreateModel();
-                _rewardAdModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdClose, HandleAdLoadSuccess, HandleAdPaid);
+                _adModel = CreateModel();
+                _adModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdClose, HandleAdLoadSuccess, HandleAdPaid);
             }
         }
 
@@ -52,7 +51,7 @@ namespace Nura.AdServiceBlog
             bool result = false;
             if (IsLoadedAd())
             {
-                result = _rewardAdModel.TryShowAd();
+                result = _adModel.TryShowAd();
             }
 
             if (!result)

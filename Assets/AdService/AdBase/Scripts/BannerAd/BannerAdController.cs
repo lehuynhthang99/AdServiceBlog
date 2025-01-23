@@ -5,28 +5,26 @@ using UnityEngine;
 
 namespace Nura.AdServiceBlog
 {
-    public class BannerAdController : AdControllerBase
+    public class BannerAdController : AdControllerBase<BannerAdModelBase>
     {
-        protected BannerAdModelBase _bannerAdModel;
-
         protected AdErrorInfo _onAdLoadFailInfo;
         protected AdInfo _onAdPaidInfo;
 
         protected BannerAdModelBase CreateModel()
         {
-            return _adFactory.CreateBannerAdModel();
+            return _adModelFactory.CreateAdModel();
         }
         public override bool IsLoadedAd()
         {
-            return _bannerAdModel != null ? _bannerAdModel.IsLoaded() : false;
+            return _adModel != null ? _adModel.IsLoaded() : false;
         }
 
         public override void RequestAd()
         {
-            if (_bannerAdModel == null)
+            if (_adModel == null)
             {
-                _bannerAdModel = CreateModel();
-                _bannerAdModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdPaid);
+                _adModel = CreateModel();
+                _adModel.RegisterCallback(HandleAdLoadSuccess, HandleAdLoadFail, HandleAdPaid);
             }
         }
 
