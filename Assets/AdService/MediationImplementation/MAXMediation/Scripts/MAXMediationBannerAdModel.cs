@@ -23,7 +23,7 @@ namespace Nura.AdServiceBlog.MAXMediation
             return _isLoadedAd;
         }
 
-        private void OnAdLoaded(string adUnitId, MaxSdkBase.AdInfo adInfo)
+        private void OnAdLoaded(string adUnitId, MaxSdkBase.AdInfo maxAdInfo)
         {
             if (!string.Equals(_maxMediationBannerID, adUnitId))
             {
@@ -31,12 +31,15 @@ namespace Nura.AdServiceBlog.MAXMediation
             }
 
             _isLoadedAd = true;
-            HandleAdLoaded();
+
+            AdInfo adInfo = MAXMediationAdInfoParser.ParseToBaseAdInfo(maxAdInfo);
+
+            HandleAdLoaded(adInfo);
 
             TryShowAd();
         }
 
-        private void OnAdFailedToLoad(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
+        private void OnAdFailedToLoad(string adUnitId, MaxSdkBase.ErrorInfo maxErrorInfo)
         {
             if (!string.Equals(_maxMediationBannerID, adUnitId))
             {
@@ -44,7 +47,10 @@ namespace Nura.AdServiceBlog.MAXMediation
             }
 
             _isLoadedAd = false;
-            HandleFailedLoad();
+            
+            AdErrorInfo adErrorInfo = MAXMediationAdInfoParser.ParseToBaseAdErrorInfo(maxErrorInfo);
+            
+            HandleFailedLoad(adErrorInfo);
         }
 
         public override void Destroy()

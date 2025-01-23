@@ -9,7 +9,7 @@ namespace Nura.AdServiceBlog
     {
         protected BannerAdModelBase _bannerAdModel;
 
-        protected bool _isOnAdLoadFail;
+        protected AdErrorInfo _onAdLoadFailInfo;
 
         protected BannerAdModelBase CreateModel()
         {
@@ -32,9 +32,12 @@ namespace Nura.AdServiceBlog
         protected virtual void Update()
         {
             //when banner loading failed
-            if (_isOnAdLoadFail)
+            if (_onAdLoadFailInfo != null)
             {
-                _isOnAdLoadFail = false;
+                //TODO: handle ad error info if needed
+
+                //------------------------------
+                _onAdLoadFailInfo = null;
                 RequestNewAdAfterSeconds(MIN_SECONDS_TO_REQUEST_WHEN_REQUEST_FAILED_IN_MS);
             }
         }
@@ -46,12 +49,12 @@ namespace Nura.AdServiceBlog
             RequestAd();
         }
 
-        protected virtual void HandleAdLoadFail()
+        protected virtual void HandleAdLoadFail(AdErrorInfo adErrorInfo)
         {
-            _isOnAdLoadFail = true;
+            _onAdLoadFailInfo = adErrorInfo;
         }
 
-        protected void HandleAdLoadSuccess()
+        protected void HandleAdLoadSuccess(AdInfo adInfo)
         {
         }
     }

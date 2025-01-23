@@ -38,7 +38,6 @@ namespace Nura.AdServiceBlog.MAXMediation
 
             AdErrorInfo adErrorInfo = MAXMediationAdInfoParser.ParseToBaseAdErrorInfo(maxErrorInfo);
 
-
             HandleFailedLoad(adErrorInfo);
         }
 
